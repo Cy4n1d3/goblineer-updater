@@ -168,25 +168,33 @@ class GoblineerUpdater(object):
         # Parsing the auctions
         parsed_auctions = defaultdict(dict)
         for auc in tqdm(auctions):
-            # The item won't be taken into account when it has no buyout
+            # The item won't be taken into account when it has no price
             if 'buyout' in auc and auc['buyout'] != 0:
-                unit_price = auc['buyout'] / auc['quantity'] / 10000
+                buy_price = auc['buyout']
+            elif 'unit_price' in auc and auc['unit_price'] != 0:
+                buy_price = auc['unit_price']
+            else:
+                # Skip this item
+                continue
 
-                # Creating the dictionary key with the item id and bonus ids
-                item_id_tuple = (auc['item']['id'],)
-                dict_key_list = list(item_id_tuple)
+            # unit_price = buy_price / auc['quantity'] / 10000
+            unit_price = buy_price / 10000
 
-                if 'bonus_lists' in auc['item']:
-                    for bonus_id in auc['item']['bonus_lists']:
-                        dict_key_list.append(bonus_id)
+            # Creating the dictionary key with the item id and bonus ids
+            item_id_tuple = (auc['item']['id'],)
+            dict_key_list = list(item_id_tuple)
 
-                dict_key = tuple(dict_key_list)
+            if 'bonus_lists' in auc['item']:
+                for bonus_id in auc['item']['bonus_lists']:
+                    dict_key_list.append(bonus_id)
 
-                # This will create a dict
-                # the key is the unit price, the value is the number of times that unit_price appears
-                if unit_price in parsed_auctions[dict_key]:
-                    parsed_auctions[dict_key][unit_price] += auc['quantity']
-                else:
-                    parsed_auctions[dict_key][unit_price] = auc['quantity']
+            dict_key = tuple(dict_key_list)
+
+            # This will create a dict
+            # the key is the unit price, the value is the number of times that unit_price appears
+            if unit_price in parsed_auctions[dict_key]:
+                parsed_auctions[dict_key][unit_price] += auc['quantity']
+            else:
+                parsed_auctions[dict_key][unit_price] = auc['quantity']
 
         return parsed_auctions

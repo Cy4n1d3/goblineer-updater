@@ -40,7 +40,7 @@ def marketvalue(prices: dict) -> dict:
         return {'marketvalue': numpy.average(values), 'quantity': count, 'MIN': minimum}
 
     # Step by step array check
-    checked_item_count, current_percentage = [0,0]
+    checked_item_count, current_percentage = [0, 0]
     previous_price = minimum
     price_array = []
     for price in unit_prices:
@@ -51,7 +51,7 @@ def marketvalue(prices: dict) -> dict:
 
         price_array += dict_to_list({price: prices[price]})
         
-        # End of the cycle, increase the count and percentage and store the current val as preious
+        # End of the cycle, increase the count and percentage and store the current val as previous
         checked_item_count += prices[price]
         current_percentage = checked_item_count / count
         previous_price = price
@@ -68,13 +68,12 @@ def marketvalue(prices: dict) -> dict:
     breakpoint_high = average + deviation* 1.5
 
     # Throwing out the data outside of the breakpoint scope
-    price_array_filtered = list(filter(lambda x: x >= breakpoint_low and x <= breakpoint_high, price_array))
+    price_array_filtered = list(filter(lambda x: breakpoint_low <= x <= breakpoint_high, price_array))
 
     # Returning the average of the filtered prices
     marketvalue = numpy.average(price_array_filtered)
 
     return {'marketvalue': marketvalue, 'quantity': count, 'MIN': minimum}
-
 
 
 def list_to_dict(l: list) -> dict:
@@ -87,6 +86,7 @@ def list_to_dict(l: list) -> dict:
         tmp[x] = l.count(x)
     
     return tmp
+
 
 def dict_to_list(d: dict) -> list:
     """

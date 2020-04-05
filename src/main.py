@@ -40,8 +40,11 @@ def main():
     for item_ids, item_data in tqdm(parsed_auctions.items()):
         marketvalue_data = marketvalue(item_data)
         marketvalues.append({
-            'item': item_ids[0], 'bonusIds': item_ids[1:], 
-            'marketvalue': str(marketvalue_data['marketvalue']), 'quantity': str(marketvalue_data['quantity']), 'MIN': str(marketvalue_data['MIN'])
+            'item': item_ids[0],
+            'bonusIds': item_ids[1:],
+            'marketvalue': str(marketvalue_data['marketvalue']),
+            'quantity': str(marketvalue_data['quantity']),
+            'MIN': str(marketvalue_data['MIN'])
         })
     print("\n")
 
@@ -50,7 +53,7 @@ def main():
     data_path = path.join(getenv('WOW_DIRECTORY'), '_retail_', 'Interface', 'AddOns', 'Goblineer', 'data.lua')
 
     with open(data_path, 'w') as f:
-        f.write("goblineer_data = [" + dumps(marketvalues, separators=(',',':')) + "]")
+        f.write("goblineer_data = [" + dumps(marketvalues, separators=(',', ':')) + "]")
     success_process_print("Writing marketvalues to file")
 
     print('\nDone!')
