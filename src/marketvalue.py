@@ -1,5 +1,6 @@
 import numpy
 
+
 def marketvalue(prices: dict) -> dict:
     """
     Calculates the marketvalue from the given prices

@@ -1,7 +1,10 @@
-import sys, os
+import os
+import sys
+
 
 def start_process_print(str):
     sys.stdout.write('\r[ ] ' + str)
+
 
 def success_process_print(str):
     sys.stdout.flush()
@@ -11,6 +14,7 @@ def success_process_print(str):
         sys.stdout.write('\r[{}] '.format('\u2713') + str + '\n')
     else:
         sys.stdout.write('\r[{}] '.format('\033[92m'+'\u2713'+'\033[0m') + str + '\n')
+
 
 def error_process_print(str):
     sys.stdout.flush()
