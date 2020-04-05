@@ -5,30 +5,34 @@ from json import dumps, dump
 
 from .marketvalue import marketvalue
 from .printer import start_process_print, success_process_print
-from .update import get_oauth_token, get_auction_data_status, get_auction_data, parse_auctions
+from .update import GoblineerUpdater
+
 
 def main():
     # Loading the environmental variables
     load_dotenv()
 
-    # Betting the OAuth token from Blizzard's API
-    start_process_print("Getting the OAuth token")
-    oauth_token = get_oauth_token(getenv('OAUTH_CLIENT'), getenv('OAUTH_SECRET'))
-    success_process_print("Getting the OAuth token")
+    updater_settings = {
+        'oauth_client': getenv('OAUTH_CLIENT'),
+        'oauth_secret': getenv('OAUTH_SECRET'),
+        'region': getenv('REGION'),
+        'realm': getenv("REALM"),
+        'locale': getenv("LOCALE")
+    }
 
-    # Checking the Auction House Data status
-    start_process_print("Getting the Auction House status")
-    ah_status = get_auction_data_status(oauth_token, getenv("REGION"), getenv("REALM"), getenv("LOCALE"))
-    success_process_print("Getting the Auction House data")
+    # Get updater instance and the OAuth token from Blizzard's API
+    start_process_print("Preparing Updater and getting OAuth token")
+    updater = GoblineerUpdater(**updater_settings)
+    success_process_print("Preparing Updater and getting OAuth token")
 
     # Getting the Auction House Data
     start_process_print("Getting the Auction House data (may take some time based on your internet speed)")
-    auction_data = get_auction_data(ah_status['url'])
+    auction_data = updater.get_auction_data()
     success_process_print("Getting the Auction House data (may take some time based on your internet speed)")
 
     # Parsing the Auctions
     print("\nParsing the data")
-    parsed_auctions = parse_auctions(auction_data)
+    parsed_auctions = updater.parse_auctions(auction_data)
 
     # Calculating the marketvalues
     print("\nCalculating marketvalues")
@@ -48,7 +52,6 @@ def main():
     with open(data_path, 'w') as f:
         f.write("goblineer_data = [" + dumps(marketvalues, separators=(',',':')) + "]")
     success_process_print("Writing marketvalues to file")
-
 
     print('\nDone!')
 

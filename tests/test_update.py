@@ -1,6 +1,6 @@
 import pytest, sys
 sys.path.insert(0, '')
-from src.update import get_oauth_token, get_auction_data, get_auction_data_status, parse_auctions
+from src.update import get_oauth_token, get_auction_data, get_auction_data_url, parse_auctions
 
 class TestGetOauthToken(object):
     blizz_api_url = 'https://us.battle.net/oauth/token'
@@ -24,16 +24,16 @@ class TestGetOauthToken(object):
 class TestGetLastModified(object):
     def test_incorrect_types(self):
          with pytest.raises(TypeError):
-            get_auction_data_status(1, 1, 1)
-            get_auction_data_status(1, 1, 1, 1)
-            get_auction_data_status(1, 'a', 'a', 'a')
-            get_auction_data_status('a', 1, 'a', 'a')
-            get_auction_data_status('a', 'a', 1, 'a')
-            get_auction_data_status('a', 'a', 'a', 1)
+            get_auction_data_url(1, 1, 1)
+            get_auction_data_url(1, 1, 1, 1)
+            get_auction_data_url(1, 'a', 'a', 'a')
+            get_auction_data_url('a', 1, 'a', 'a')
+            get_auction_data_url('a', 'a', 1, 'a')
+            get_auction_data_url('a', 'a', 'a', 1)
 
     def test_incorrect_url(self):
         with pytest.raises(ConnectionError):
-            get_auction_data_status('a', 'a', 'a', 'http://asd.asd')
+            get_auction_data_url('a', 'a', 'a', 'http://asd.asd')
 
 class TestGetAuctionData(object):
     def test_incorrect_types(self):
